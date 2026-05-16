@@ -99,3 +99,7 @@ chmod +x ./uninstall-skills.sh
 - `BOOK_OVERVIEW.md`：整体理解与方法论骨架。
 - `INDEX.md`：skill 索引与推荐学习顺序。
 - `verified.md`：已验证条目。
+
+## License
+
+本仓库采用 [MIT License](./LICENSE) 开源。
