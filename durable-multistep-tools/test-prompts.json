@@ -1,0 +1,52 @@
+{
+  "skill": "durable-multistep-tools",
+  "version": "0.1.0",
+  "source_book": "AgentKit Documentation — Inngest",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我这个 research tool 要先生成搜索词，再并发抓网页，最后汇总。中间挂了以后能不能不要整段重来？",
+      "expected_behavior": "应激活 durable-multistep-tools，并建议把它改造成 Inngest function + 多个 step。",
+      "notes": "典型 durable workflow 场景。"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "一个 tool 里要批量调用外部 API，我想控制并发并在失败时自动重试。",
+      "expected_behavior": "应激活 durable-multistep-tools，并围绕 step 边界、并发和重试策略给出设计。",
+      "notes": "典型并发 + retry 需求。"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "现在所有逻辑都塞在 tool handler 里，日志很难看，失败点也不好定位，怎么改？",
+      "expected_behavior": "应激活 durable-multistep-tools，并推动用户把 handler 拆成具名步骤。",
+      "notes": "典型单 handler 失控场景。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我只有一个读取数据库的小 tool，执行特别快，也没什么失败成本。",
+      "expected_behavior": "不应激活本 skill，因为这是简单同步 tool，不值得升级成 durable workflow。",
+      "notes": "诱饵: 过度设计场景。"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "planner 做完计划以后怎么交给 editor？我想让 network 更稳定。",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 network 路由与 state 设计。",
+      "notes": "诱饵: 应转给 deterministic-network-routing。"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我现在只有两步：先搜索再总结。虽然不复杂，但失败代价很高。值得做成多步 durable tool 吗？",
+      "expected_behavior": "边界上可以激活本 skill；若失败代价高、需要恢复或可观测性，即使步骤不多，也值得引入最小 durable 设计。",
+      "notes": "边界: 步骤数不多但失败成本高。"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "全部 should_not_trigger 必须通过。"
+}

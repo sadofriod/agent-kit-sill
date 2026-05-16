@@ -1,0 +1,52 @@
+{
+  "skill": "tool-trigger-contract",
+  "version": "0.1.0",
+  "source_book": "AgentKit Documentation — Inngest",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "tool 已经挂了，但模型经常只是嘴上说会去查，不真的调用。description 应该怎么改？",
+      "expected_behavior": "应激活 tool-trigger-contract，并把重点放在触发条件描述而不是继续扩 prompt。",
+      "notes": "典型 description 失效场景。"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "模型会调用 tool，但参数老传错，schema 应该怎么收紧？",
+      "expected_behavior": "应激活 tool-trigger-contract，并围绕参数结构约束与命名给出改法。",
+      "notes": "典型参数边界问题。"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "tool name 叫 process_data 太泛了，会影响模型什么时候调用吗？",
+      "expected_behavior": "应激活 tool-trigger-contract，并讨论 name 的动作语义与可判别性。",
+      "notes": "典型命名语义问题。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我这个 agent 既做规划又做审查，是不是角色本身就太宽了？",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是单 agent 职责边界。",
+      "notes": "诱饵: 应转给 agent-goal-boundary。"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "这个 tool 有搜索、抓取、总结三步，我想失败后从中间恢复。",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 durable multistep workflow。",
+      "notes": "诱饵: 应转给 durable-multistep-tools。"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "模型不调 tool，到底是 description 写差了，还是这个能力根本不该放进当前 agent？",
+      "expected_behavior": "边界上先快速判断角色边界；若能力应保留为 tool，再切到本 skill 优化契约。",
+      "notes": "边界: 角色边界与 tool 契约混合。"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "全部 should_not_trigger 必须通过。"
+}

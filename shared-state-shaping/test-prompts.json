@@ -1,0 +1,52 @@
+{
+  "skill": "shared-state-shaping",
+  "version": "0.1.0",
+  "source_book": "AgentKit Documentation — Inngest",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "planner 的结果现在只在回复文本里，router 下一轮很难判断要不要交给 editor。state 该怎么设计？",
+      "expected_behavior": "应激活 shared-state-shaping，并把重点放在用结构化字段表示 workflow progress。",
+      "notes": "典型 progress state 设计场景。"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "classification 结果要不要只放 history，还是提升成 state.classification？",
+      "expected_behavior": "应激活 shared-state-shaping，并帮助用户判断哪些关键信号必须结构化。",
+      "notes": "典型字段提升问题。"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "多 agent 都要读上一步产物，我不想每次都让它们自己从长 history 里找。",
+      "expected_behavior": "应激活 shared-state-shaping，并建议把关键产物引用和完成标记写入 state。",
+      "notes": "典型共享上下文问题。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我现在只有一个 agent，想知道它的职责是不是已经太宽了。",
+      "expected_behavior": "不应优先激活本 skill，因为用户还在单 agent 边界设计阶段。",
+      "notes": "诱饵: 应转给 agent-goal-boundary。"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我的 router 应该怎么加 maxIter 和 done 条件，防止无限循环？",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题已是 handoff 与终止控制。",
+      "notes": "诱饵: 应转给 deterministic-router-handoff。"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我已经有 state 了，但字段很多很乱。现在该先整理 state，还是先改 router？",
+      "expected_behavior": "边界上应优先激活本 skill，先收敛决定下一跳必需的最小状态，再优化 router。",
+      "notes": "边界: state 混乱与 router 混乱相互影响。"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "全部 should_not_trigger 必须通过。"
+}

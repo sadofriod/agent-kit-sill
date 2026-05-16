@@ -1,0 +1,52 @@
+{
+  "skill": "agent-goal-boundary",
+  "version": "0.1.0",
+  "source_book": "AgentKit Documentation — Inngest",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我这个 agent 既做规划又做检索又做写作，现在越来越难控，先该怎么收敛？",
+      "expected_behavior": "应激活 agent-goal-boundary，并先帮助用户收紧单 agent 的唯一主目标。",
+      "notes": "典型职责膨胀场景。"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "system prompt 已经很长了，但 agent 还是会在不同角色之间乱切。",
+      "expected_behavior": "应激活 agent-goal-boundary，并指出问题更可能在职责切分，而不是继续扩 prompt。",
+      "notes": "典型边界失焦场景。"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我不确定现在该继续做单 agent，还是拆成 planner 和 executor。",
+      "expected_behavior": "应激活 agent-goal-boundary，并帮助用户判断哪些职责已经跨越单 agent 边界。",
+      "notes": "典型升级 network 前的判断。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "tool 的 description 怎么写，模型才会更稳定地调用？",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 tool 契约设计。",
+      "notes": "诱饵: 应转给 tool-trigger-contract。"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我的 router 总是停不下来，应该怎么设置 done 条件？",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 router handoff 与终止控制。",
+      "notes": "诱饵: 应转给 deterministic-router-handoff。"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我只有一个 agent，但它既要回答问题又要调用多个工具。现在是职责问题还是 tool 问题？",
+      "expected_behavior": "可先激活本 skill 做边界诊断；若主目标仍单一，则快速切到 tool-trigger-contract。",
+      "notes": "边界: 角色边界与 tool 契约交叉。"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "全部 should_not_trigger 必须通过。"
+}

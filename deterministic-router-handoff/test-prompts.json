@@ -1,0 +1,52 @@
+{
+  "skill": "deterministic-router-handoff",
+  "version": "0.1.0",
+  "source_book": "AgentKit Documentation — Inngest",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我已经有 planner 和 editor 了，但 router 不知道什么时候该切过去，handoff 规则怎么写？",
+      "expected_behavior": "应激活 deterministic-router-handoff，并把重点放在基于 state 的显式分支。",
+      "notes": "典型 handoff 设计场景。"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "network 经常在任务完成后还继续跑，done 和 maxIter 该怎么配合？",
+      "expected_behavior": "应激活 deterministic-router-handoff，并围绕完成条件和迭代上限给出方案。",
+      "notes": "典型终止控制场景。"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我不想让一个 supervisor LLM 每次猜下一个 agent，我想把 handoff 写死在 router 里。",
+      "expected_behavior": "应激活 deterministic-router-handoff，并帮助用户把阶段迁移表达为确定性分支。",
+      "notes": "典型显式 router 场景。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "planner 产出的 plan 现在只在 history 里，state 字段应该怎么设计？",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 shared state 设计。",
+      "notes": "诱饵: 应转给 shared-state-shaping。"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "一个 tool 有多步外部副作用，我想在失败后自动恢复。",
+      "expected_behavior": "不应优先激活本 skill，因为核心问题是 durable multistep workflow。",
+      "notes": "诱饵: 应转给 durable-multistep-tools。"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我已经有 router 了，但 state 字段很乱，hand off 也乱。现在先改哪边？",
+      "expected_behavior": "边界上应先快速收敛最关键的 state 字段，再回到本 skill 改 router 分支与终止逻辑。",
+      "notes": "边界: state 与 router 设计联动。"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "全部 should_not_trigger 必须通过。"
+}
